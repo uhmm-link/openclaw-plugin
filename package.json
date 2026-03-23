@@ -1,0 +1,24 @@
+{
+  "name": "@uhmm-link/openclaw-plugin",
+  "version": "1.0.0",
+  "description": "OpenClaw plugin for uhmm.link webhook integration",
+  "type": "module",
+  "main": "index.ts",
+  "peerDependencies": {
+    "openclaw": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  },
+  "keywords": [
+    "openclaw",
+    "uhmm-link",
+    "webhook",
+    "review"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uhmm-link/openclaw-plugin.git"
+  }
+}

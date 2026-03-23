@@ -1,0 +1,14 @@
+{
+  "id": "uhmm-link",
+  "name": "uhmm.link",
+  "description": "Receives review.completed webhooks from uhmm.link",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean" },
+      "webhookPath": { "type": "string", "default": "/uhmm-webhook" },
+      "webhookAuth": { "type": "string", "enum": ["plugin", "gateway"] }
+    }
+  }
+}
