@@ -4,21 +4,27 @@ Receives review completion webhooks from uhmm.link. Use when integrating uhmm.li
 
 ## Quick Setup
 
-1. **Gateway setup** (run once):
+1. **Install** (extensions directory):
+
    ```bash
-   openclaw config set gateway.bind 0.0.0.0
+   cd ~/.openclaw/extensions
+   git clone https://github.com/uhmm-link/openclaw-plugin.git uhmm-link
+   ```
+
+2. **Gateway on LAN** (required if uhmm.link is not on the same host as OpenClaw):
+
+   ```bash
+   openclaw config set gateway.bind lan
    openclaw gateway restart
    ```
 
-2. **Webhook URL** for your uhmm.link project:
-   ```
-   http://<openclaw-ip>:18789/uhmm-webhook
-   ```
-   Replace `<openclaw-ip>` with your machine's IP (e.g. `192.168.1.100`) so uhmm.link can reach it.
+   Use bind **modes** (`lan`, etc.), not raw IPs like `0.0.0.0` — legacy host values are rejected.
 
-3. **Configure uhmm.link**:
-   - Project settings → **Callback URL** → paste the webhook URL above
-   - Or: Account settings → **Callback URL** (applies to all projects)
+3. **Webhook URL** for uhmm.link project or account **Callback URL**:
+
+   ```
+   http://<openclaw-host-ip>:18789/uhmm-webhook
+   ```
 
 ## Payload Format
 
