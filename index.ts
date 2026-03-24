@@ -1,5 +1,13 @@
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk/core";
 
+/** Optional; gateways that support surfacing webhooks to the agent session. */
+type ApiWithNotifyAgent = OpenClawPluginApi & {
+  notifyAgent?: (opts: {
+    message: string;
+    sessionKey: string;
+  }) => void | Promise<void>;
+};
+
 interface UhmmLinkPayload {
   event: string;
   completedAt: string;
@@ -41,6 +49,13 @@ const uhmmLinkPlugin = {
             ? raw.webhookPath
             : "/uhmm-webhook",
         webhookAuth: raw.webhookAuth === "gateway" ? "gateway" : "plugin",
+        notifyAgent:
+          typeof raw.notifyAgent === "boolean" ? raw.notifyAgent : true,
+        agentSessionKey:
+          typeof raw.agentSessionKey === "string" &&
+          raw.agentSessionKey.trim().length > 0
+            ? raw.agentSessionKey.trim()
+            : "agent:main:main",
       };
     },
   },
@@ -79,6 +94,12 @@ const uhmmLinkPlugin = {
 
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ ok: true }));
+
+          notifyAgentOnReview(
+            api as ApiWithNotifyAgent,
+            config,
+            payload
+          );
           return true;
         } catch (err) {
           api.logger.error(
@@ -98,6 +119,36 @@ const uhmmLinkPlugin = {
 };
 
 export default uhmmLinkPlugin;
+
+function notifyAgentOnReview(
+  api: ApiWithNotifyAgent,
+  config: { notifyAgent: boolean; agentSessionKey: string },
+  payload: UhmmLinkPayload
+): void {
+  if (!config.notifyAgent) return;
+
+  const notify = api.notifyAgent;
+  if (typeof notify !== "function") {
+    api.logger.warn(
+      "[uhmm-link] notifyAgent is enabled but api.notifyAgent is unavailable on this gateway"
+    );
+    return;
+  }
+
+  const label = payload.stackLabel || payload.stackId;
+  const message = `review completed: ${label} by ${payload.reviewerName}`;
+
+  void Promise.resolve(
+    notify({
+      message,
+      sessionKey: config.agentSessionKey,
+    })
+  ).catch((err) => {
+    api.logger.error(
+      `[uhmm-link] notifyAgent failed: ${err instanceof Error ? err.message : String(err)}`
+    );
+  });
+}
 
 async function readRequestBody(req: {
   [Symbol.asyncIterator]?: () => AsyncIterableIterator<Buffer | Uint8Array>;

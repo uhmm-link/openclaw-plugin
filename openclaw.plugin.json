@@ -8,7 +8,16 @@
     "properties": {
       "enabled": { "type": "boolean" },
       "webhookPath": { "type": "string", "default": "/uhmm-webhook" },
-      "webhookAuth": { "type": "string", "enum": ["plugin", "gateway"] }
+      "webhookAuth": { "type": "string", "enum": ["plugin", "gateway"] },
+      "notifyAgent": {
+        "type": "boolean",
+        "description": "When true (default), calls api.notifyAgent so the OpenClaw agent sees the review (not only logs)"
+      },
+      "agentSessionKey": {
+        "type": "string",
+        "default": "agent:main:main",
+        "description": "Session key passed to notifyAgent (see OpenClaw docs for your setup)"
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 # uhmm.link Webhook Plugin
 
-Receives review completion webhooks from uhmm.link. Use when integrating uhmm.link card review sessions with OpenClaw for notifications, logging, or downstream workflows.
+Receives `review.completed` webhooks from uhmm.link and notifies the OpenClaw agent via `api.notifyAgent` (configurable `agentSessionKey`, can disable with `notifyAgent: false`).
 
 ## Quick Setup
 
@@ -47,3 +47,5 @@ When a reviewer completes a session, uhmm.link POSTs:
 - `webhookPath` — default `/uhmm-webhook`
 - `webhookAuth` — `plugin` or `gateway`
 - `enabled` — set to `false` to disable
+- `notifyAgent` — default `true`; calls `api.notifyAgent({ message, sessionKey })` after success
+- `agentSessionKey` — default `agent:main:main`

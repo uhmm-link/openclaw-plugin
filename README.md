@@ -1,6 +1,6 @@
 # uhmm.link OpenClaw Plugin
 
-OpenClaw plugin that receives `review.completed` webhooks from [uhmm.link](https://uhmm.link). When a reviewer finishes a card stack session, uhmm.link POSTs the results to your OpenClaw gateway.
+OpenClaw plugin that receives `review.completed` webhooks from [uhmm.link](https://uhmm.link). When a reviewer finishes a card stack session, uhmm.link POSTs the results to your OpenClaw gateway. After responding to uhmm.link, the plugin calls **`api.notifyAgent`** so the agent gets a visible message (not only gateway logs). Set `notifyAgent` to `false` in plugin config if your gateway does not implement `notifyAgent`.
 
 ## Installation
 
@@ -49,14 +49,17 @@ OpenClaw plugin that receives `review.completed` webhooks from [uhmm.link](https
 | Webhook never arrives; nothing in gateway logs | Gateway bound to localhost only | `openclaw config set gateway.bind lan` then `openclaw gateway restart` |
 | Connection refused or wrong port | Callback/Webhook URL port ≠ gateway port | Confirm gateway port in OpenClaw config; many installs use **18789** by default |
 | Config error about “host aliases” / legacy bind | Used `0.0.0.0` or similar | Use `lan` (or another supported mode) instead |
+| Log says `notifyAgent` unavailable | Older gateway / API mismatch | Set `notifyAgent: false` or upgrade OpenClaw; agent notification is optional |
 
 ## Config
 
-| Option        | Default           | Description                          |
-| ------------- | ----------------- | ------------------------------------ |
-| `webhookPath` | `/uhmm-webhook`   | HTTP path for the webhook endpoint   |
-| `webhookAuth` | `plugin`          | Auth mode: `plugin` or `gateway`     |
-| `enabled`     | `true`            | Enable or disable the plugin         |
+| Option            | Default             | Description |
+| ----------------- | ------------------- | ----------- |
+| `webhookPath`     | `/uhmm-webhook`     | HTTP path for the webhook endpoint |
+| `webhookAuth`     | `plugin`            | Auth mode: `plugin` or `gateway` |
+| `enabled`         | `true`              | Enable or disable the plugin |
+| `notifyAgent`     | `true`              | Call `api.notifyAgent` after each successful webhook |
+| `agentSessionKey` | `agent:main:main`   | Session key for `notifyAgent` (adjust per OpenClaw docs) |
 
 ## Payload
 
