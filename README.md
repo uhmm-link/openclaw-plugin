@@ -88,7 +88,3 @@ uhmm.link sends a JSON payload like:
   ]
 }
 ```
-
-## License
-
-MIT
