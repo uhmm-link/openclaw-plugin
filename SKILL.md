@@ -20,11 +20,7 @@ Receives review completion webhooks from uhmm.link. Use when integrating uhmm.li
 
    Use bind **modes** (`lan`, etc.), not raw IPs like `0.0.0.0` — legacy host values are rejected.
 
-3. **Webhook URL** for uhmm.link project or account **Callback URL**:
-
-   ```
-   http://<openclaw-host-ip>:18789/uhmm-webhook
-   ```
+3. **uhmm.link → OpenClaw:** In **uhmm.link** (hosted or local), not in OpenClaw, set **Callback URL** or **Webhook URL** in account/project settings to your gateway endpoint, e.g. `http://<gateway-host>:<gateway-port>/uhmm-webhook`. Port is often **18789** but confirm with your OpenClaw gateway config; path must match `webhookPath` (default `/uhmm-webhook`).
 
 ## Payload Format
 

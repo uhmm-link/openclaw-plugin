@@ -24,19 +24,30 @@ OpenClaw plugin that receives `review.completed` webhooks from [uhmm.link](https
 
    Do **not** use a raw host like `0.0.0.0` for `gateway.bind` — OpenClaw expects bind **modes** (`lan`, `loopback`, `custom`, `tailnet`, `auto`). Using a legacy host alias can error with: *gateway.bind host aliases are legacy; use bind modes*.
 
-3. **In uhmm.link**, set your **Callback URL** to:
+3. **Tell uhmm.link where to send webhooks** (this is **not** set inside OpenClaw).
+
+   OpenClaw only **listens** for POSTs; uhmm.link **calls** that URL when a review finishes. Configure that in **uhmm.link itself**—whether you use the hosted app or a **local / self-hosted** uhmm.link instance:
+
+   - Open **account** or **project** settings in that uhmm.link deployment.
+   - Find the field named **Callback URL** or **Webhook URL** (wording depends on the screen).
+   - Set it to your gateway’s webhook endpoint, using the host where OpenClaw’s gateway runs and the path this plugin registers (default `/uhmm-webhook`).
+
+   Example (replace host, port, and path if yours differ):
 
    ```
-   http://<openclaw-host-ip>:18789/uhmm-webhook
+   http://<gateway-host>:<gateway-port>/uhmm-webhook
    ```
 
-   Replace `<openclaw-host-ip>` with the machine where OpenClaw runs (e.g. `192.168.1.70`).
+   **Port:** OpenClaw often defaults the gateway HTTP port to **18789**, but it is **not guaranteed**—your install may override it. Check your OpenClaw config or docs (e.g. `openclaw config` / `gateway.port` or equivalent) and use whatever port your gateway actually listens on.
+
+   **Host:** If uhmm.link runs on another device, use the LAN IP of the machine running OpenClaw (e.g. `192.168.1.70`), not `localhost`, unless both run on the same host.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 | -------- | -------------- | ----- |
 | Webhook never arrives; nothing in gateway logs | Gateway bound to localhost only | `openclaw config set gateway.bind lan` then `openclaw gateway restart` |
+| Connection refused or wrong port | Callback/Webhook URL port ≠ gateway port | Confirm gateway port in OpenClaw config; many installs use **18789** by default |
 | Config error about “host aliases” / legacy bind | Used `0.0.0.0` or similar | Use `lan` (or another supported mode) instead |
 
 ## Config
